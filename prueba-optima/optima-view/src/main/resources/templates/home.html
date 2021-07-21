@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<link rel="stylesheet" href="css/optima.css">
+
+<title>Lista Coingecko</title>
+</head>
+<body>
+
+	<h1>Resultado de la consula:</h1>
+	<table style="width: 100%" border="2">
+		<thead>
+			<tr>
+				<td>ID</td>
+				<td>NOMBRE</td>
+				<td>ETHEREUN</td>
+				<td>POLYGINPOS</td>
+
+			</tr>
+		</thead>
+
+		<tbody>
+
+			<tr th:each="row, iStat : ${rootPage.content}"
+				th:style="${iStat.odd}? 'font-weight: bold;'"
+				th:alt-title="${iStat.even}? 'even' : 'odd'">
+				<td th:text="${row.id}" />
+				<td th:text="${row.name}" />
+				<td th:text="${row.platforms.ethereum}" />
+				<td th:text="${row.platforms.polygonPos}" />
+			</tr>
+
+
+		</tbody>
+	</table>
+
+	<h3>paginacion:</h3>
+
+	<table style="width: 100%">
+		<tr>
+
+			<td th:if="${rootPage.totalPages > 0}" class="pagination"
+				th:each="pageNumber : ${pageNumbers}"><a
+				th:href="@{/list(size=${rootPage.size}, page=${pageNumber})}"
+				th:text=${pageNumber}
+				th:class="${pageNumber==rootPage.number + 1} ? active"></a></td>
+
+		</tr>
+	</table>
+
+
+	<h1>Guardar informacion</h1>
+
+	<h2>Geolocaclizacion de cliente</h2>
+
+	<form id="formOptima" th:action="@{/save}" method="post" th:object="${client}">
+
+
+
+		<table>
+
+
+
+			<tr>
+				<td><label>Longitud</label></td>
+				<td><input type="text" id="longitude" name="longitude"
+					placeholder="Longitud" required="required"></td>
+			</tr>
+
+			<tr>
+				<td><label>Latitud</label></td>
+				<td><input type="text" id="latitude" name="latitude"
+					placeholder="Latitud" required="required"></td>
+			</tr>
+
+			<tr>
+				<td><label>IP</label></td>
+				<td><input type="text" id="ip" name="ip"
+					placeholder="IP equipo que hace la busquedad" required="required"></td>
+			</tr>
+
+
+			<tr>
+				<td><label>Tipo Equipo</label></td>
+				<td><select name="deviceType" id="deviceType">
+						<option value="Mobile">Mobile</option>
+						<option value="Desktop">Desktop</option>
+				</select>
+				<td>
+			</tr>
+
+		</table>
+
+		</br>
+
+		<button type="submit">Guardar</button>
+		<div th:if="${msg != null}" style="color: orange;" th:text="${msg}"	role='alert'></div>
+
+	</form>
+
+	<!-- Bootstrap core JavaScript
+    ================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+
+	<script>
+	
+	
+	$.validator.addMethod('IP4Checker', function(value) {
+		var ip="^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+	    "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+	    "([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\." +
+	    "([01]?\\d\\d?|2[0-4]\\d|25[0-5])$";
+	        return value.match(ip);
+	    }, 'Invalid IP address');
+	
+		$("#formOptima").validate({
+			rules : {
+				longitude : {
+					required : true,
+					digits : true
+				},
+
+				latitude : {
+					required : true,
+					digits : true
+				}
+				,
+				
+				ip : {
+					required : true,
+					IP4Checker : true
+				}
+				
+				
+
+			}
+
+			
+
+		});
+	</script>
+
+</body>
+</html>
